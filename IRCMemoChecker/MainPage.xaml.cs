@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
+using IRCMemoChecker.Data;
 
 using NotifyType = IRCMemoChecker.IRCClient.NotifyType;
 
@@ -28,6 +29,7 @@ namespace IRCMemoChecker
     public sealed partial class MainPage : Page
     {
         private IRCClient ircClient;
+        private ObservableCollection<IRCServerData> IRCServers = new ObservableCollection<IRCServerData>();
 
         public MainPage()
         {
@@ -37,6 +39,14 @@ namespace IRCMemoChecker
             ircClient = new IRCClient(this.Dispatcher);
             ircClient.OnNotification += NotifyUser;
             ircClient.OnConnectionChanged += OnConnectionStateChanged;
+
+            // Temp data
+            ircClient.User = "dirrr";
+            ircClient.Passwd = "123";
+
+            IRCServers.Add(new IRCServerData("Opera srv", new Uri("http://irc.opera.com")));
+            IRCServers.Add(new IRCServerData("Mibbit srv", new Uri("http://irc.mibbit.com")));
+            ServersListBox.DataContext = IRCServers;
         }
 
         /// <summary>
@@ -61,7 +71,7 @@ namespace IRCMemoChecker
             {
                 case IRCClient.ConnectionStateType.Disconnected:
                     // Start connecting
-                    ircClient.Connect(new Uri(ServerHostname.Text));
+//                    ircClient.Connect(new Uri(ServerHostname.Text));
                     break;
                 case IRCClient.ConnectionStateType.Connecting:
                 case IRCClient.ConnectionStateType.Connected:
@@ -77,13 +87,13 @@ namespace IRCMemoChecker
             switch (type)
             {
                 case IRCClient.ConnectionStateType.Disconnected:
-                    ConnectButton.Content = "Connect";
+//                    ConnectButton.Content = "Connect";
                     break;
                 case IRCClient.ConnectionStateType.Connecting:
-                    ConnectButton.Content = "Cancel";
+//                    ConnectButton.Content = "Cancel";
                     break;
                 case IRCClient.ConnectionStateType.Connected:
-                    ConnectButton.Content = "Disconnect";
+//                    ConnectButton.Content = "Disconnect";
                     break;
                 default:
                     break;
@@ -92,7 +102,7 @@ namespace IRCMemoChecker
 
         private void Send_Click(object sender, RoutedEventArgs e)
         {
-            ircClient.Send(SendText.Text);
+//            ircClient.Send(SendText.Text);
         }
 
         private void NotifyUser(string strMessage, NotifyType type)

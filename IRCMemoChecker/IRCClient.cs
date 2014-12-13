@@ -23,6 +23,7 @@ namespace IRCMemoChecker
         public event NotificationContainer OnNotification;
         public event ConnectionChanged OnConnectionChanged;
 
+        // Connection status
         public bool IsConnected { get { return ConnectionState == ConnectionStateType.Connected; } }
 
         public ConnectionStateType ConnectionState
@@ -35,14 +36,19 @@ namespace IRCMemoChecker
                     OnConnectionChanged(connState);
             }
         }
+
         private ConnectionStateType connState = ConnectionStateType.Disconnected;
 
+        // Authorities
+        public string User { get; set; }
+        public string Passwd { get; set; }
+
         // client data
-        private StreamSocket clientSocket = null;
-        CancellationToken tokenCancel;
+        private StreamSocket clientSocket;
+        CancellationTokenSource canclConnect;
         
-        private DataWriter dataWriter = null;
-        private DataReader dataReader = null;
+        private DataWriter dataWriter;
+        private DataReader dataReader;
 
         CoreDispatcher parentDispatcher;
 
@@ -107,9 +113,8 @@ namespace IRCMemoChecker
                 ConnectionState = ConnectionStateType.Connecting;
 
                 // Set timeout 3 sec
-                CancellationTokenSource canclConnect = new CancellationTokenSource();
+                canclConnect = new CancellationTokenSource();
                 canclConnect.CancelAfter(1000);
-                tokenCancel = canclConnect.Token;
 
                 // Try to connect to the 
                 await clientSocket.ConnectAsync(new HostName(uri.Host), uri.Port.ToString(),
@@ -153,7 +158,7 @@ namespace IRCMemoChecker
 
         public void Disconnect()
         {
-            if (ConnectionState == ConnectionStateType.Disconnected|| clientSocket == null)
+            if (ConnectionState == ConnectionStateType.Disconnected || clientSocket == null)
             {
                 Notify("Not connected.", NotifyType.ErrorMessage);
                 return;
@@ -167,9 +172,15 @@ namespace IRCMemoChecker
                 {
                     Send("QUIT buy buy");
                 }
-
-                if (ConnectionState == ConnectionStateType.Connecting)
-                    tokenCancel.ThrowIfCancellationRequested();
+                else if (ConnectionState == ConnectionStateType.Connecting)
+                {
+                    if (canclConnect != null)
+                    {
+                        canclConnect.Cancel();
+                        canclConnect.Dispose();
+                        canclConnect = null;
+                    }
+                }
 
                 // Try to connect to the 
                 clientSocket.Dispose();
@@ -228,8 +239,14 @@ namespace IRCMemoChecker
 
         private void Handshake()
         {
-            Send("NICK IRCClient");
-            Send("USER IRCClient 0 * :IRCClient");
+            Send("NICK " + User);
+            Send("USER " + User + " 0 * :" + User);
+
+            //if (!String.IsNullOrEmpty(Passwd))
+            //{
+            //    Send("PASSWD " + Passwd);
+            //    Send("IDENTIFY " + Passwd);
+            //}
         }
 
         private async void OnListen()
@@ -333,6 +350,8 @@ namespace IRCMemoChecker
             {
                 // Call StoreAsync method to store the data to a backing stream
                 await dataWriter.StoreAsync();
+
+                Notify(">>" + sendString, NotifyType.DataMessage);
             }
             catch (Exception exception)
             {
@@ -345,6 +364,11 @@ namespace IRCMemoChecker
 
                 Notify("Send data or receive failed with error: " + exception.Message, NotifyType.ErrorMessage);
             }
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }
