@@ -29,7 +29,7 @@ namespace IRCMemoChecker
     public sealed partial class MainPage : Page
     {
         private IRCClient ircClient;
-        private ObservableCollection<IRCServerData> IRCServers = new ObservableCollection<IRCServerData>();
+//        private ObservableCollection<IRCServerData> IRCServers = new ObservableCollection<IRCServerData>();
 
         public MainPage()
         {
@@ -44,9 +44,9 @@ namespace IRCMemoChecker
             ircClient.User = "dirrr";
             ircClient.Passwd = "123";
 
-            IRCServers.Add(new IRCServerData("Opera srv", new Uri("http://irc.opera.com")));
-            IRCServers.Add(new IRCServerData("Mibbit srv", new Uri("http://irc.mibbit.com")));
-            ServersListBox.DataContext = IRCServers;
+            IRCServers.Instance.Add(new IRCServerData("Opera srv", new Uri("http://irc.opera.com:6667")));
+            IRCServers.Instance.Add(new IRCServerData("Mibbit srv", new Uri("http://irc.mibbit.com:6667")));
+            ServersListBox.DataContext = IRCServers.Instance.Servers;
         }
 
         /// <summary>
@@ -154,6 +154,33 @@ namespace IRCMemoChecker
         {
             OutputLog.Visibility = ButtonLog.IsChecked == true ?
                 Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void ServersListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //// Get the data object that represents the current selected item
+            //IRCServerData ServerData = (sender as ListBox).SelectedItem as IRCServerData;
+
+            ////Checking whether that it is not null 
+            //if (ServerData != null)
+            //{
+            //    ircClient.Connect(ServerData.Url);
+            //}
+
+            // Get the data object that represents the current selected item
+            IRCServerData ServerData = (sender as ListBox).SelectedItem as IRCServerData;
+
+            //Checking whether that it is not null 
+            if (ServerData != null)
+            {
+                Frame.Navigate(typeof(ServerInfoPage), ServerData);
+            }
+            
+        }
+
+        private void AppBarButton_NewServerClick(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

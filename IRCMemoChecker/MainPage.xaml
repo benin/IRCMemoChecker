@@ -15,10 +15,6 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!--<StackPanel x:Name="TitlePanel" Grid.Row="0">
-            <TextBlock x:Name="ApplicationTitle" Text="IRC Memo Checker" FontSize="{StaticResource HubSectionHeaderFontSize}"/>
-        </StackPanel>-->
-
         <StackPanel x:Name="TitlePanel" Grid.Row="0" 
                     Orientation="Horizontal" Margin="12,0,0,12">
                 <Image Source="Assets/irc-icon.png" Stretch="None"/>
@@ -31,10 +27,10 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <ListBox x:Name="ServersListBox" Margin="5" Grid.Row="0"
+            <ListBox x:Name="ServersListBox" Margin="0" Grid.Row="0"
                      Background="Transparent"
                      HorizontalAlignment="Left"
-			         ItemsSource="{Binding}" >
+			         ItemsSource="{Binding}" SelectionChanged="ServersListBox_SelectionChanged" >
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Vertical">
@@ -74,9 +70,9 @@
                                 IsChecked="True" Click="AppBarLogButton_Clicked"/>
 
             <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Add New Server" Icon="Add" Click="AppBarButton_NewServerClick"/>
                 <AppBarButton Label="Edit" Icon="Edit" Click="AppBarButton_Click"/>
                 <AppBarButton Label="Remove" Icon="Remove" Click="AppBarButton_Click"/>
-                <AppBarButton Label="Add" Icon="Add" Click="AppBarButton_Click"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>

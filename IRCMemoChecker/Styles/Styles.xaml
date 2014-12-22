@@ -12,7 +12,8 @@
     
     <Style x:Key="TagLineTextStyle" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe WP"/>
-        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}"/>
     </Style>
 
     <Style x:Key="SampleHeaderTextStyle" TargetType="TextBlock">

@@ -1,0 +1,40 @@
+﻿<Page
+    x:Class="IRCMemoChecker.ServerInfoPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IRCMemoChecker"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" 
+                    Orientation="Horizontal" Margin="12,0,12,12">
+            <Image Source="Assets/irc-icon.png" Stretch="None"/>
+            <TextBlock Text="IRC Memo Checker" Style="{StaticResource SampleHeaderTextStyle}" Margin="6,0" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="12,0,12,12">
+            <StackPanel Orientation="Vertical">
+                <TextBlock x:Name="TextBlockName" Text="{Binding Name}" Margin="6,0" Style="{StaticResource SampleHeaderTextStyle}" VerticalAlignment="Center" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Label="refresh" Icon="Refresh" Click="AppBarButton_RefreshClick"/>
+            <AppBarButton Label="clear" Icon="Clear" Click="AppBarButton_ClearClick"/>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Edit Server" Icon="Edit" Click="AppBarButton_EditServerClick"/>
+                <AppBarButton Label="Remove Server" Icon="Remove" Click="AppBarButton_RemoveServerClick"/>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>
